@@ -17,6 +17,7 @@ System core files: if a prog is terminated abnormally a core file with a memory 
 System V IPC: Inter Process Communication (Shared Memory, Semaphores and message queue).
 Type of package: Binary(files ready for deployement, architecture dependent, compiled for each sys) , source(used to generate bin , used for multi architecture).
 package management systems: low(rpm), high(yum, dnf, zypper) for RHEL, Centos | low (dpkg), high(apt-get, apt-cache).
+--- RPM ---
 rpm naming format: binary : <name>-<version>-<release>.<distros>.<architecture>.rpm eg : sed-4.2.1-10.el6.x86_64.rpm | source <name>-<version>-<release>.<distros>.rpm , eg : sed-4.2.1-10.el6.src.rpm
 /var/lib/rpm : dir that holds rpm database files (berkley db hash files) overriden by --dbpath.
 rpmrc : file to specify defautl settings for RPM, overrriden by --rcfile.
