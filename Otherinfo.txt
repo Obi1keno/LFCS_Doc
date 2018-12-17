@@ -1,0 +1,22 @@
+/boot: vmlinuz + initramfs.
+/dev: contains devise nodes (devices built into or connected to the system) - execluding network devices.
+Static Lib: locked at compile time (part of the bin) and do not change -> +execution speed time.
+Dynamic Lib: loaded at run time  (DLL in win), can be modified with recompiling the bin using them.
+Kernel modules: stored under /lib/modules/xyz = code that can be loaded or unloaded w/ reboot.
+Pseudo file system: /proc /dev /sys - resides only in memory (fake fs) - dynamicaly generate files when accessed.
+/dev: can be a real FS a virtual speudo filesystem (memory only) or middle point (Linux devtmpsfs).
+Context switch: switch of cpu from one process or thread to another managed by kernel.
+setuid: s execute bit to execute a bin as an elevated user when needed (eg : passwrd - to change pw).
+Process state: run - sleeping/waiting - stoped - zombie.
+execution node: user mode(isolated own memory space including root user) and kernel mode (system calls full access to cpu & hardwares).
+Shell commands: some cmd are built into shell (do not need load, fork or exec) like echo, kill, etc.
+Kernel processes: Internal( maintenance such as flushing buffers, balancing load, etc); External(runs in user space like normal apps).
+file descriptors: table created and updated when files are opened , contains INT values (Process table for files opened by procs).
+Socket descriptors: same as file descriptors for network socket.
+System core files: if a prog is terminated abnormally a core file with a memory image is created and stored. (/var/crash, /var/cache/abrt, etc.).
+System V IPC: Inter Process Communication (Shared Memory, Semaphores and message queue).
+Type of package: Binary(files ready for deployement, architecture dependent, compiled for each sys) , source(used to generate bin , used for multi architecture).
+package management systems: low(rpm), high(yum, dnf, zypper) for RHEL, Centos | low (dpkg), high(apt-get, apt-cache).
+rpm naming format: binary : <name>-<version>-<release>.<distros>.<architecture>.rpm eg : sed-4.2.1-10.el6.x86_64.rpm | source <name>-<version>-<release>.<distros>.rpm , eg : sed-4.2.1-10.el6.src.rpm
+/var/lib/rpm : dir that holds rpm database files (berkley db hash files) overriden by --dbpath.
+rpmrc : file to specify defautl settings for RPM, overrriden by --rcfile.
