@@ -1,14 +1,37 @@
-/boot: vmlinuz + initramfs.
-/dev: contains devise nodes (devices built into or connected to the system) - execluding network devices.
+--- Files ---
+Linux files : everything in linux is a file.
+Shareable vs Non Shareable : can or cannot be shared with differents hosts (Home directory can be share, Lock files cannot be).
+Variable vs Static : Log files are variable, binaries are static files.
+--- Linux Filesystem Hierarchy Standard : FHS ---
+/bin -> /usr/bin : common non essential binaries, executable programs and scripts, used by user and sysadmin(awk, mkdir, vi).
+/sbin -> /usr/sbin : essential binaries for booting, restoring, recovering or reparing, used by sysadmin(fdisk, getty, halt, ifconfig, init, mkfs, reboot).
+/lib -> /usr/lib : libraries needed to executes binaries, important for boot and running.
+/lib64 -> /usr/lib64 : 64bits libraries.
+Kernel modules: stored under /lib/modules/xyz = code that can be loaded or unloaded w/ reboot.
+PAM : Pluggable Authentification Modules, stored in /lib/security, used for dynamic authentification support for apps and services.
+/boot : all data needed for system to boot before executing usermode, vmlinuz (compressed linux kernel) 1..n + initramfs (intial ram filesystem) 1..n.
+/dev : contains devise nodes, a special device files that represent devices built into or connected to the system (essential for system running, byte stream, I/O devices, etc), execluding network devices. can be a real FS a virtual speudo filesystem (memory only) or middle point (Linux devtmpsfs).
+/proc : mount point for pseudo-filesystem (only in RAM), each process have a subdirectory here with info like ressource or history (empty on non running system, contains one line), also give info about hardware, system and interface.
+/sys : mount point for system pseudo-filesystem (only in RAM), used to gather info about system and can modify its behavior while running (contains one line).
+Pseudo file system: /proc /dev /sys - resides only in memory (fake fs) - dynamicaly generate files when accessed.
+/etc : machine local configuration files and some startup scripts.
+/home : users home directories
+/root : root user home directory
+/media : mount FS or removable media (USB, CD).
+udev : in modern linux, udev mount automatically removable media under /media.
+/mnt : used my sysadmin to mount temporary FS or shares (NFS, SAMBA, CIFS or AFS).
+/opt : program files , for software packages like skype (/opt/skype/bin, /opt/skype/man).
+/srv : should normally be used for serving files (www, ftp, rsync) but rarely used.
+
+--- Libraries ---
 Static Lib: locked at compile time (part of the bin) and do not change -> +execution speed time.
 Dynamic Lib: loaded at run time  (DLL in win), can be modified with recompiling the bin using them.
-Kernel modules: stored under /lib/modules/xyz = code that can be loaded or unloaded w/ reboot.
-Pseudo file system: /proc /dev /sys - resides only in memory (fake fs) - dynamicaly generate files when accessed.
-/dev: can be a real FS a virtual speudo filesystem (memory only) or middle point (Linux devtmpsfs).
+
 Context switch: switch of cpu from one process or thread to another managed by kernel.
 setuid: s execute bit to execute a bin as an elevated user when needed (eg : passwrd - to change pw).
 Process state: run - sleeping/waiting - stoped - zombie.
-execution node: user mode(isolated own memory space including root user) and kernel mode (system calls full access to cpu & hardwares).
+--- Execution mode ---
+execution mode: user mode(isolated own memory space including root user) and kernel mode (system calls full access to cpu & hardwares).
 Shell commands: some cmd are built into shell (do not need load, fork or exec) like echo, kill, etc.
 Kernel processes: Internal( maintenance such as flushing buffers, balancing load, etc); External(runs in user space like normal apps).
 file descriptors: table created and updated when files are opened , contains INT values (Process table for files opened by procs).
@@ -17,13 +40,13 @@ System core files: if a prog is terminated abnormally a core file with a memory 
 System V IPC: Inter Process Communication (Shared Memory, Semaphores and message queue).
 Type of package: Binary(files ready for deployement, architecture dependent, compiled for each sys) , source(used to generate bin , used for multi architecture).
 package management systems: low(rpm), high(yum, dnf, zypper) for RHEL, Centos | low (dpkg), high(apt-get, apt-cache).
---- RPM ---
+--- RPM : RedHat Package Manager ---
 rpm naming format: binary : <name>-<version>-<release>.<distros>.<architecture>.rpm eg : sed-4.2.1-10.el6.x86_64.rpm | source <name>-<version>-<release>.<distros>.rpm , eg : sed-4.2.1-10.el6.src.rpm
 /var/lib/rpm : dir that holds rpm database files (berkley db hash files) overriden by --dbpath.
 rpmrc : file to specify defautl settings for RPM, overrriden by --rcfile.
 rpm installation tasks : 1 dependecies check, 2 Conflict Check, 3 exec cmd requiered before install, 4 deals with Conf files, 5 unpack and install files (w/ permissions, etc.), execute cmd after install, update RPM database.
 Upgrading kernel : Install new version of Kernel needs reboot, do not use -U when installing or current kernel will be lost and you can't rollback to old kernel. (use -ivh)
---- YUM ---
+--- YUM : Yellow Dog Updater Modified ---
 Repositroy config files : are kept in /etc/yum.repos.d/ & have a .repo extension.
 Repository file example :
                         [repo-name]
@@ -32,3 +55,5 @@ Repository file example :
                         enabled=1
                         gpgcheck=1 #integrity checking should alwayz be 1
 Conf files : if a package has it conf file updated , the old one will be renamed : "conf_file.rpmsave" , if old conf file can still work after update, the new one will be : "conf_file.rpmnew"
+--- DNF : Dannified YUM ---
+dnf : Next generation replacement for yum, it has better memory usage and improve yum iterative dependency resolution.

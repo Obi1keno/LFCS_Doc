@@ -78,3 +78,5 @@ yum groupinstall group_name || yum install @group_name # install a group of soft
 yum group summary # list all available group packages.
 ### Packages conf files ###
 find /etc -name "*.rpm*" # list all packages rpm conf files stored inside /etc.
+####_DNF_####
+### DNF informations, install and uninstall ###
