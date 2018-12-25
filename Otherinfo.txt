@@ -21,3 +21,14 @@ package management systems: low(rpm), high(yum, dnf, zypper) for RHEL, Centos | 
 rpm naming format: binary : <name>-<version>-<release>.<distros>.<architecture>.rpm eg : sed-4.2.1-10.el6.x86_64.rpm | source <name>-<version>-<release>.<distros>.rpm , eg : sed-4.2.1-10.el6.src.rpm
 /var/lib/rpm : dir that holds rpm database files (berkley db hash files) overriden by --dbpath.
 rpmrc : file to specify defautl settings for RPM, overrriden by --rcfile.
+rpm installation tasks : 1 dependecies check, 2 Conflict Check, 3 exec cmd requiered before install, 4 deals with Conf files, 5 unpack and install files (w/ permissions, etc.), execute cmd after install, update RPM database.
+Upgrading kernel : Install new version of Kernel needs reboot, do not use -U when installing or current kernel will be lost and you can't rollback to old kernel. (use -ivh)
+--- YUM ---
+Repositroy config files : are kept in /etc/yum.repos.d/ & have a .repo extension.
+Repository file example :
+                        [repo-name]
+                        name=Description of the repos
+                        baseurl=http://somesystem.com/path/torepo
+                        enabled=1
+                        gpgcheck=1 #integrity checking should alwayz be 1
+Conf files : if a package has it conf file updated , the old one will be renamed : "conf_file.rpmsave" , if old conf file can still work after update, the new one will be : "conf_file.rpmnew"
