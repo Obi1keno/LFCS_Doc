@@ -1,4 +1,4 @@
-####_GENERAl####
+####_GENERAL_####
 ssh student@ansibleprod
 shutdown -h 10:00 "Shutingdown for update" # -h : halt 10:00 schedule "" message to users.
 ####_SUDO_####
@@ -79,4 +79,12 @@ yum group summary # list all available group packages.
 ### Packages conf files ###
 find /etc -name "*.rpm*" # list all packages rpm conf files stored inside /etc.
 ####_DNF_####
-### DNF informations, install and uninstall ###
+### DNF informations, install, uninstall and update ###
+dnf search php # searche packages on the repos.
+dnf install httpd # install package httpd.
+dnf remove httpd # uninstall package httpd.
+dnf check-update # check for available updates.
+dnf update httpd -y # -y : assumes yes, update httpd.
+####_PS_#### {BSD no '-', UNIX '-', GNU '--'}
+ps -elF # [SYSTEMV Style] -e : select all processes, -l : long format, -F : extrat full format(info for each thread), you can use -H for tree(how a process is connected to his ancestor).
+ps aux # [BSD Style] a : lift BSD "only yourself" to see all, u : user oriented format, x : Register formart, you can use f for tree(how a process is connected to his ancestor).

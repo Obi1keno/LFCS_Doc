@@ -1,8 +1,14 @@
+--- Boot process ---
+Boot process : Power ON -> BIOS -> Master Boot Record(MBR) -> Boot loader(GRUB) -> Kernel(Linux) -> Intial Ram Disk(initramfs image) -> /sbin/init(Parent process, systemd) -> shell -> XWindows system.
 --- Files ---
 Linux files : everything in linux is a file.
 Shareable vs Non Shareable : can or cannot be shared with differents hosts (Home directory can be share, Lock files cannot be).
 Variable vs Static : Log files are variable, binaries are static files.
 --- Linux Filesystem Hierarchy Standard : FHS ---
+Partition : logical part of the disk. (Windows : disk1, Linux : /dev/sda1).
+FileSystem : method of storing and finding files. (Windows : NTFS/FAT, Linux : EXT3,EXT4,XFS.).
+Mounting parameters : For windows, drive letters C:, D:, for Linux mount point /, /usr.
+Base folder where OS is stored : Windows : C: , Linux : /.
 /bin -> /usr/bin : common non essential binaries, executable programs and scripts, used by user and sysadmin(awk, mkdir, vi).
 /sbin -> /usr/sbin : essential binaries for booting, restoring, recovering or reparing, used by sysadmin(fdisk, getty, halt, ifconfig, init, mkfs, reboot).
 /lib -> /usr/lib : libraries needed to executes binaries, important for boot and running.
@@ -14,6 +20,7 @@ PAM : Pluggable Authentification Modules, stored in /lib/security, used for dyna
 /proc : mount point for pseudo-filesystem (only in RAM), each process have a subdirectory here with info like ressource or history (empty on non running system, contains one line), also give info about hardware, system and interface.
 /sys : mount point for system pseudo-filesystem (only in RAM), used to gather info about system and can modify its behavior while running (contains one line).
 Pseudo file system: /proc /dev /sys - resides only in memory (fake fs) - dynamicaly generate files when accessed.
+/run : Pseudo-filesystem (Only in RAM) with a tmpfs ramdisk like /dev/shm, Store "transient files" that contain runtime info which may be written on early system startup.
 /etc : machine local configuration files and some startup scripts.
 /home : users home directories
 /root : root user home directory
@@ -22,22 +29,58 @@ udev : in modern linux, udev mount automatically removable media under /media.
 /mnt : used my sysadmin to mount temporary FS or shares (NFS, SAMBA, CIFS or AFS).
 /opt : program files , for software packages like skype (/opt/skype/bin, /opt/skype/man).
 /srv : should normally be used for serving files (www, ftp, rsync) but rarely used.
-
+/tmp : temporary files.
+/usr : "Secondary Hierarchy", not needed for booting, need to reside on different partition than /.
+/var : variable or volatile data that change a lot (like logs).
 --- Libraries ---
 Static Lib: locked at compile time (part of the bin) and do not change -> +execution speed time.
 Dynamic Lib: loaded at run time  (DLL in win), can be modified with recompiling the bin using them.
-
+--- Processes ---
+[kworker/0:0H] : Kernel process.
+init or systemd : Process N° 1, ancestor of all processes expect the kernel ones.
+[kthreadd] : PID=2, adopter process for all zombie child processes.
+Scheduler : controls processes (give the rights to run, etc.).
 Context switch: switch of cpu from one process or thread to another managed by kernel.
 setuid: s execute bit to execute a bin as an elevated user when needed (eg : passwrd - to change pw).
 Process state: run - sleeping/waiting - stoped - zombie.
+Kernel processes/threads : created by kernel, 2 types : internal( maintenance such as flushing buffers, balancing load, etc); external(runs in user space like normal apps) , example : kthreadd, migration (moving threads from CPU to another, I/O to disk).
+Interactive processes : started by user at CLI or GUI, example : bash, firefox, top.
+Batch processes : automatic processes that are scheduled, example : crontab, updatedb.
+Daemons : server process that runs continuously, started by user or during system startup, waits for user or system to call them, example : httpd, sshd.
+Threads : light weight processes, tasks that run under a main process sharing memory and ressource (same PID but differents TID : process ID internally), example : Firefox, gnome.
+file descriptors: table created and updated when files are opened , contains INT values (Process table for files opened by procs).
+Real time priority : can be assigned to time-sensitive tasks.
+Hard real time : making sur a job is completed within a time window.
+Load average : average of load number for a given time, include (Proc running on CPU, runnable in queue and sleeping waiting I/O)
+Load average example : 0.41, 0.12, 0.08
+                      0.41 for last 1 minute 41% of system utilized.
+                      0.12 for last 5 minutes 12% of system utilized.
+                      0.08 for last 15 minutes 8% of system utilized.
+                      if quad CPU : 4.00 => 100% of each CPU utilized at the last minute.
+--- PS ---
+BSD : ps aux - vsz : process virtual memory in kb, rss : resident set size (non-swapped physical memory a task is usingin kb), stat : state of process (S:leeping, R:unning), < : High priority, N : Low priority, L : page locked in memory, s : session leader, l : multithreaded, + : forground process group.
 --- Execution mode ---
 execution mode: user mode(isolated own memory space including root user) and kernel mode (system calls full access to cpu & hardwares).
 Shell commands: some cmd are built into shell (do not need load, fork or exec) like echo, kill, etc.
-Kernel processes: Internal( maintenance such as flushing buffers, balancing load, etc); External(runs in user space like normal apps).
-file descriptors: table created and updated when files are opened , contains INT values (Process table for files opened by procs).
+--- Network ---
 Socket descriptors: same as file descriptors for network socket.
+--- System info ---
 System core files: if a prog is terminated abnormally a core file with a memory image is created and stored. (/var/crash, /var/cache/abrt, etc.).
 System V IPC: Inter Process Communication (Shared Memory, Semaphores and message queue).
+--- Hard and Soft links ---
+inode : index node, is a data structure that describes a filesystem object (file or directory), storing the attributes (permission, file owner) and disk block location of the object.
+Hard link (same inode) : additional name for files only, allowing to access a file from a different directory.
+Soft link (different inode): also called SymLink, is a special file pointing to another file, directory or a remote share like NFS (shortcut), deleting the file break the symlink.
+--- Standard file streams/Descriptors ---
+stdin : standard input (0) , example : keyboard.
+stdout : standard output (1), example : terminal.
+stderr : standard error (2), example : log file.
+---  Wildcards and matching file names ---
+? : matchs any signle character.
+* : matchs a string of characters.
+[abc] : matchs occurence of "a", "b" or "f".
+[!abc] : matchs occurence not in "a", "b" or "f"
+--- Package management ----
 Type of package: Binary(files ready for deployement, architecture dependent, compiled for each sys) , source(used to generate bin , used for multi architecture).
 package management systems: low(rpm), high(yum, dnf, zypper) for RHEL, Centos | low (dpkg), high(apt-get, apt-cache).
 --- RPM : RedHat Package Manager ---
