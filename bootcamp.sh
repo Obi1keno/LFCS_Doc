@@ -2,9 +2,17 @@
 ssh student@ansibleprod
 shutdown -h 10:00 "Shutingdown for update" # -h : halt 10:00 schedule "" message to users.
 ####_SUDO_####
-touch /etc/sudoers.d/student < student ALL = (ALL) ALL && chmod 440 /etc/sudoers.d/student #add a sudoer user named student.
-####_SPACE_INFO_####
-sudo du --max-depth=1 -hx # -x : stay on fs do not look at dir that aren't in / (/dev/proc/run/sys) -h : human readable.
+touch /etc/sudoers.d/student < student ALL = (ALL) ALL && chmod 440 /etc/sudoers.d/student # add a sudoer user named student.
+sudo -E bash - # -E : indicate to the security policy that user wishes to preserve their existing env variables (can return error).
+####_SPACE_FILESYSTEM_INFO_####
+df -Th # -T : print filesystem type, -h : human readable, df or diskfree displays filesystem disk usage.
+du --max-depth=1 -hx # -x : stay on fs do not look at dir that aren't in / (/dev/proc/run/sys) -h : human readable.
+####_NFS_####
+systemctl start nfs # start nfs daemon.
+systemctl enable nfs # nfs started at boot.
+cat /etc/exports # contains directories and permissions to share with other hosts.
+exportfs -av # -a : export or unexport directories, v : verbose : notify system about new NFS directories, you can also restart nfs but it is heavier.
+mount ansible_server:/home/student/project /mnt/nfs/project # mount manually the NFS if he wasnt mounted automatically in /etc/fstab.
 ####_BIN_or_APPs_INFO_####
 whatis firefox # display manual page descriptions.
 which firefox # shows the full path of (shell) commands.
@@ -21,7 +29,7 @@ ldd /usr/bin/vi # print shared object(libs) dependecies.
 ldconfig # configure dynamic linker(shared libs) run time bindings, run to update if new lib added (lib, lib64), env var LD_LIBRARY_PATH.
 ipcs -p # overall activity summary on SysV -p : info about the processes that created the seg.
 ####_SIGNALS_KILL_####
-kill -l # display a list of signals with their numbers, SIGRTMAX and SIGRTMIN are ream time signals, recent addition no pupose uses FIFO.
+kill -l # display a list of signals with their numbers, SIGRTMAX and SIGRTMIN are ream time signals, recent addition no purpose uses FIFO.
 man 7 signal # full signal docs.
 kill 1988 # kill proc pid 1988 with SIGTERM (terminate/safe kill), use -9 SIGKILL to force kill.
 killall java # kill all processes with java name.
@@ -85,6 +93,7 @@ dnf install httpd # install package httpd.
 dnf remove httpd # uninstall package httpd.
 dnf check-update # check for available updates.
 dnf update httpd -y # -y : assumes yes, update httpd.
-####_PS_#### {BSD no '-', UNIX '-', GNU '--'}
+####_PS_&_TOP_#### {PS : BSD no '-', UNIX '-', GNU '--'}
 ps -elF # [SYSTEMV Style] -e : select all processes, -l : long format, -F : extrat full format(info for each thread), you can use -H for tree(how a process is connected to his ancestor).
 ps aux # [BSD Style] a : lift BSD "only yourself" to see all, u : user oriented format, x : Register formart, you can use f for tree(how a process is connected to his ancestor).
+ps top # Display linux process.
