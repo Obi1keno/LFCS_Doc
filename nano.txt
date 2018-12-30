@@ -1,0 +1,6 @@
+####_NANO_#####
+CTRL-G : help
+CTRL-O : write to file
+CTRL-K : exit
+CTRL-R : insert from another file
+CTRL-C : cancel previous command

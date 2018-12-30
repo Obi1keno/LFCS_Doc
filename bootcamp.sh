@@ -1,6 +1,16 @@
-####_GENERAL_####
+####_GENERAL_HISTORY_SHORTCUTS_####
 ssh student@ansibleprod
 shutdown -h 10:00 "Shutingdown for update" # -h : halt 10:00 schedule "" message to users.
+history # print history of commands executed based on ~/.bash_history. (env variable for history : HISTFILE > location, HISTFILESIZE > max line numbers, etc.)
+!! # runs last command executed.
+!vim # runs last "vim" command executed.
+CTRL-R # search for previous commands.
+CTRL-L # clear screen (same as clear command).
+CTRL-D # exit current shell (same as exit command).
+CTRL-Z # put current process runing into suspended backgroup.
+CTRL-C # kill current process.
+CTRL-A # beginning of the line.
+CTRL-U # delete all line.
 ####_SUDO_####
 touch /etc/sudoers.d/student < student ALL = (ALL) ALL && chmod 440 /etc/sudoers.d/student # add a sudoer user named student.
 sudo -E bash - # -E : indicate to the security policy that user wishes to preserve their existing env variables (can return error).
@@ -13,10 +23,29 @@ systemctl enable nfs # nfs started at boot.
 cat /etc/exports # contains directories and permissions to share with other hosts.
 exportfs -av # -a : export or unexport directories, v : verbose : notify system about new NFS directories, you can also restart nfs but it is heavier.
 mount ansible_server:/home/student/project /mnt/nfs/project # mount manually the NFS if he wasnt mounted automatically in /etc/fstab.
+####_USER_GROUP_OWNERSHIP_PERMISSIONS_ENV-VAR_####
+who # list current login users.
+whoami # identify current user.
+id obistami # information about user (uid, gid, groups, etc.)
+useradd obistami # create a new use by adding a line to : /etc/passwd(obistami:x:1000:1000::/home/obistami:/bin/bash) , creating a home directory : /home/obistami and copying basic files from : /etc/skel/* .
+userdel -r obistami # -r : delete user and home directory.
+groupadd devs # add the group "devs".
+groupdel devs # delete the group "devs".
+usermod -a -G devs obistami # -a : append, -G : list of group affected by -a (if !-a user will be removed from group not listed) add obistami to the group devs.
+groups obistami # display the groups were "obistami" belongs.
+su obistami # switch to obistami , if empty switch to root.
+alias ls='ls -al' # set a new alias for ls, if no option show all set alias, to make it persistent, place them in ~/.bashrc.
+set || env || export || printenv # print environnement variables (set print more info).
+export JAVA_HOME=/usr/java/jre1.6.0_04 # export a new env variable (here the java home), to make it permanant on each user shell, add it to ~/.bashrc and run : source ~/.bashrc || . ~/.bashrc.
+export PATH=/usr/java/jdk1.8.0_04/bin:$PATH # add jdk to path variable, be sure to add $PATH at the end, to not override previous paths.
+export SHELL=/bin/bash # set the default shell.
+
 ####_BIN_or_APPs_INFO_####
 whatis firefox # display manual page descriptions.
 which firefox # shows the full path of (shell) commands.
 whereis firefox # locate the binary, source, and manual page files for a command.
+type cd # give the type of the command (example cd is a shell builtin)
+help # displays information about builtin commands.
 ####_ULIMITE_####
 ulimit -a # show all limits.
 ulimit -n 1600 # increase the max number of file descriptors.
