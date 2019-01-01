@@ -337,13 +337,31 @@ pkill -u student java # kill all java process of user student.
 #################
 ####_NETWORK_####
 #################
+### WGET CURL AND FTP ###
+#-------------------------#
+wget "URL" # non interactive network downloader.
+curl -o file.html www.google.com # -o : output to file, transfert a URL (source code or return json from a webservice for example) .
+sftp ftp.gnu.org && get welcome.msg # connect to the sftp server and get the welcome.msg file.
+scp file obistami@ansiblemaster:/home/obistami # copy file from local to remote server.
+### Network misc ###
+#-------------------------#
 hostname # display, configure the system hostname.
 host google.com # (package : bind-utils) dnslookup (ip, mx, v4, v6, etc.).
 ping -c 5 google.com # -c : count of pings, pings the host google.com and display answers.
 vim /etc/sysconfig/network # network config files (Fedora, CentOS).
 vim /etc/network # network config files (debian).
 ifconfig || ip addr # (package : net-tools) display info about network interfaces and networks (IP, Mask, etc).
+dhclient eth0 # get a fresh IP from dhcp.
+vim /etc/hosts # contains server hosts file for local host resolution before /etc/resolv.conf.
+vim /etc/resolv.conf # file containing dns used to resolve name and ip adresses.
 ip rout show # show routing info.
 route -n # -n : show numerical addresses, display current routing table.
 route add -net xx.xxx.xx.xx # add static route. (del to delete) //TODO
-traceroute google.com # inspect the route which the data takes to reach destination.
+traceroute google.com # (package : traceroute) inspect the route which the data takes to reach destination.
+ethtool ens33 # (package : ethtool) query network interfaces and set params such as speed.
+netstat # display active connections and routing tables (usefull for monitoring and troubleshooting).
+nmap -vv htts://google.com/ # (package nmap) -vv : super verbosity, scans open ports on a network, useful for security.
+tcpdump -i ens33 # -i : interface, dumps network traffic for analysis.
+iptraf-ng -i ens33 # (package iptraf-ng) -i : interface, monitor network traffic in text mode.
+mtr -rw google.com # (package mtr) -r : generate report, -w : hostname long version, combine ping and traceroute, give continous displays.
+dig www.google.com # test dns like host or nslookup.
