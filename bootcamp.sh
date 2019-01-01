@@ -73,7 +73,7 @@ rsync -r --dry-run project_X archive-machine:/archive_dir/project_X # -r : recur
 ##############################
 ####_FILES_AND_DIRECTORIES_###
 ##############################
-#### VIEW FILESDIRECTORIES ###
+#### VIEW FILES DIRECTORIES ###
 #----------------------------#
 cat file1 # view file1 on stdout (screen).
 tac file1 # view file1 backwords.
@@ -82,6 +82,50 @@ tail -n 10 file1 # -n : number of lines, show the last 10 lines of file1, -f : f
 head -n 10 files # opposite of tail , show the fist 10 lines of file1.
 cd $HOME || cd ~ # change directory to home directory.
 pwd # current directory.
+### FILES MANIPULATIONS ###
+#-------------------------#
+##-----test file-----##
+file file1 # test the file and displays his type.
+##-----DIFF and CMP-----##
+diff -ciwq file1 file2 # -c : print file content and add "!" to lines that differ, -i : ingore the case, -w : ignore tab and space, -q : quiet mode (the files differs "yes" or "no").
+diff -r /root /usr # compare two directories and print what differs.
+diff3 ref_file file1 file2 # compare two files to a reference file.
+cmp file1 file2 # used to compare two files byte by byte.
+##-----patchs-----##
+patch originalfile patchfile # used to patch files modifying only deltas.(see diff and patch example)
+##-----SED-----##
+sed -e s/xxx/yyy file > file_output # -e : expression, replace first occurence of xxx with zzz in file and output to file_output.
+sed -e s/01/JAN/g -e s/02/FEB/g -i file # -e : expression, -i : replace in the same file, replace all occurence of 01 with JAN and 02 with FEB in file.
+sed -e s:/sbin/nologin:/bin/bash/g # better use ":" than : sed -e s/\/bin\/nologin/\/bin/\bash/g...
+sed -f sed_script file_to_change # -f : file, use sed_script, to change file_to_change.
+##-----AWK-----##
+awk -F : '{print "name: "$1" shell : "$7}' /etc/passwd # -F : field separator ":" here(:,space,',',;,etc.), print the $1 first column and $7 seventh column of /etc/passwd ($0 will print all file).
+##-----SORT-----##
+sort file # sort lines according to the first characteres (-r : reverse).
+sort -k 3 -u file # -k : key of sorting, -u : unique, sort lines according to the 3 first chars, then sort will check for uniq values after sorting.
+##-----UNIQ-----##
+sort file1 file2 | uniq > file3 # sort file1 and file 2 and then remove duplicate lines and output the result to file3.
+sort -c file1 # -c : count , print the count of duplicate value in file1.
+##-----PASTE-----#
+paste -d , file1 file2 > file3 # -d : delimeter =',' , file1 = "omar,bistami", file2 = "30", file3 will be : "omar,bistami,30".
+##-----JOIN-----#
+join file1 file2 > file3 # file1="0001 omar", file2="0001 bistami" , file3 will be ="0001 omar bistami".
+#-----SPLIT-----#
+split -l 1000 american-english output_name # -l : number of lines per file, split the american english dictionnary in to multiple files output_nameaa, output_nameab, etc. each with 1000 lines.
+#-----GREP-----#
+grep -v 'pattern' file # -v : invert match line that do not contain 'pattern'.
+grep [0-9] file # print file containing 0,1,2,..,8,9.
+grep -rnw '/path/to/somewhere/' -e 'pattern' # r : recursive, n : print line number, -w : whole word 'pattern', -e : pattern to search(1..n), find all files inside '/path/to/somewhere containing' 'pattern'
+#-----String-----#
+string book.xls | grep my_string # extract all printable chars in a non human file.
+#-----tr-----#
+tr [:space:] '\t' file1 file2.yml # replace all space to tab.
+#-----tee-----#
+ls -lrta | tee ls_output # print output and save a copy to ls_output.
+#-----wc-----#
+wc file # print -l : number of line, -c : number of bytes, -w : number of words (if empty the 3 are diplays by default).
+#-----cut-----#
+ls -l | cut -d " " -f3 # -d : delimiter, -f3 : 3rd column, used to manipulate column based files to extract specific columns.
 ### CREATION ####
 #---------------#
 touch file1 # create an empty file1, -t : set the date and timestamp of a file.
@@ -113,26 +157,24 @@ find /var -ctime 3 -atime +3 -mtime -2 -size +10M # -ctime : last changed 3 days
 ##-----GZIP-----##
 gzip -r project_Y # r : recursivly, compress directory and sub-directories
 gunzip project_Y.gz || gzip -d project_Y.gz # -d : uncompress (both works).
+zcat file.txt.gz || zless file.txt.gz || zmore file.txt.gz # view the gzip compressed file file.txt.gz.
+zgrep -i less file.txt.gz # i : ignore case, search inside file.txt.gz
 ##-----BZIP2-----##
 bzip -r project_Y # # r : recursivly, compress directory and sub-directories
 bunzip project_Y.bz2 || bzip2 -d project_Y.bz2 # -d : uncompress (both works).
+bzcat file.txt.bz2 || bzless file.txt.bz2 || bzmore file.txt.bz2 # view the gzip compressed file file.txt.bz2.
+bzgrep -i less file.txt.bz2 # i : ignore case, search inside file.txt.bz2
 ###-----XZ-----##
 xz -r project_Y # r : recursivly, compress directory and sub-directories
 xz -dk project_Y.xz# -d : uncompress, k : keep the compressed file do not delete it after uncompress.
+xzcat file.txt.xz || xzless file.txt.xz || xzmore file.txt.xz # view the gzip compressed file file.txt.xz.
+xzgrep -i less file.txt.xz # i : ignore case, search inside file.txt.xz
 ##-----ZIP-----##
 zip backup_home /home/student/* # compress all file inside /home/student/* inside backup_home.
 unzip backup_home.zip # uncompress in current directory.
 ##-----TAR-----##
 tar zcvf mytardir.tar.gz mytardir # z or --gzip : compress using gz(-j or --bzip2, -J or --xz), c : create archive tar, v : verbose, f : archive file.
 tar xvf myTarfile.tar # x : extract, v : verbose, f : specify file, into myTarfile directory.
-### FILES MANIPULATIONS ###
-#-------------------------#
-diff -ciwq file1 file2 # -c : print file content and add "!" to lines that differ, -i : ingore the case, -w : ignore tab and space, -q : quiet mode (the files differs "yes" or "no").
-diff -r /root /usr # compare two directories and print what differs.
-diff3 ref_file file1 file2 # compare two files to a reference file.
-cmp file1 file2 # used to compare two files byte by byte.
-patch originalfile patchfile # used to patch files modifying only deltas.
-file file1 # test the file and displays his type.
 #___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
 ##############################
 ####_USERS_GROUPS_ENV_Vars_###
@@ -157,8 +199,13 @@ touch /etc/sudoers.d/student < student ALL = (ALL) ALL && chmod 440 /etc/sudoers
 sudo -E bash - # -E : indicate to the security policy that user wishes to preserve their existing env variables (can return error).
 ### PERMISSIONS AND OWNERSHIP ###
 #-------------------------------#
-chmod 755 file || chmod u+rwx,g+rwx,g+rwx # set file permissions to 755 (1 = execute , 3 = write, 4 = read).
+chmod 755 file || chmod u+rwx,g+a,g+rwx # +a : all, set file permissions to 755 (1 = execute , 2 = write, 4 = read).
 chown apache:apache /etc/httpd/httpd.conf # change ownership of the file to the user and group apache.
+umask || umask -S # -S : symbolic representation (rwx) view the current umask.
+umask 022 # set new created files permissions , new file in linux by default have 644 - 022 (applying umask) = 622, new directories by default have 755 - 022 (umask) = 733.
+-rw-r--r--. 1 root root # file with no link =1.
+-rw-r--r--. 2 root root # file that has 2 reference pointing to it (link) = 2.
+drwxr-xr-x 10 root root # directory containing 8 files, "." and ".." = 10 files.
 ### ENV-VAR ###
 #-------------#
 alias ls='ls -al' # set a new alias for ls, if no option show all set alias, to make it persistent, place them in ~/.bashrc.
@@ -287,6 +334,16 @@ pkill -u student java # kill all java process of user student.
 ### I/O ###
 #---------#
 #___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
-################
-####_NETWORK_###
-################
+#################
+####_NETWORK_####
+#################
+hostname # display, configure the system hostname.
+host google.com # (package : bind-utils) dnslookup (ip, mx, v4, v6, etc.).
+ping -c 5 google.com # -c : count of pings, pings the host google.com and display answers.
+vim /etc/sysconfig/network # network config files (Fedora, CentOS).
+vim /etc/network # network config files (debian).
+ifconfig || ip addr # (package : net-tools) display info about network interfaces and networks (IP, Mask, etc).
+ip rout show # show routing info.
+route -n # -n : show numerical addresses, display current routing table.
+route add -net xx.xxx.xx.xx # add static route. (del to delete) //TODO
+traceroute google.com # inspect the route which the data takes to reach destination.
