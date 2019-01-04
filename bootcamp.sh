@@ -106,7 +106,7 @@ sort file # sort lines according to the first characteres (-r : reverse).
 sort -k 3 -u file # -k : key of sorting, -u : unique, sort lines according to the 3 first chars, then sort will check for uniq values after sorting.
 ##-----UNIQ-----##
 sort file1 file2 | uniq > file3 # sort file1 and file 2 and then remove duplicate lines and output the result to file3.
-sort -c file1 # -c : count , print the count of duplicate value in file1.
+uniq -c file1 # -c : count , print the count of duplicate value in file1.
 ##-----PASTE-----#
 paste -d , file1 file2 > file3 # -d : delimeter =',' , file1 = "omar,bistami", file2 = "30", file3 will be : "omar,bistami,30".
 ##-----JOIN-----#
