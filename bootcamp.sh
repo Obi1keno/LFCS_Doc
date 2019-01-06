@@ -25,6 +25,7 @@ CTRL-A # beginning of the line.
 CTRL-U # delete all line.
 ### MAN PAGES ###
 #---------------#
+man 1 test # display man n° 1 of test with full list of opertors.
 man -f sysctl # same as "whatis" command, gives description.
 man -k sysctl # prints specific subject list of man pages discussing the subject.
 man -a printf # displays all man pages (1 to 9) for printf.
@@ -207,6 +208,10 @@ umask 022 # set new created files permissions , new file in linux by default hav
 -rw-r--r--. 1 root root # file with no link =1.
 -rw-r--r--. 2 root root # file that has 2 reference pointing to it (link) = 2.
 drwxr-xr-x 10 root root # directory containing 8 files, "." and ".." = 10 files.
+### SGID and SUID ####
+-rwsr-xr-x. 1 root root 27832 Jun 10  2014 /bin/passwd # s : permission byte/sticky bite , user will get file owner's permissions as well as UID & GID when executing the file.
+chmod u+s file || chmod 4750 file  # set SUID or SGID (4 : user suid, 2 : group id guid, 6 : both).
+
 ### ENV-VAR ###
 #-------------#
 alias ls='ls -al' # set a new alias for ls, if no option show all set alias, to make it persistent, place them in ~/.bashrc.

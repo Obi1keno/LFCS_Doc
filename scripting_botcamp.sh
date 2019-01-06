@@ -41,6 +41,26 @@ xyz@server2:/opt/test         # new line.
 make ; make install ; make clean # execute next command even if previous fails.
 make && make install && make clean # execute next command if the previous one successed.
 make || cat file1 || cate file2 # execute next command if previous fails (if previous successed will stop).
+### command substitution () & parameter substitution {} ###
+x=2 ; ( x=5 ) ; echo $x : 2 # () create a subshell that do not affect parent shell.
+x=2 ; { x=4 } ; echo $x : 4 # parameter substitution, affect the current shell (Variable concatenation, Parameter Expansion and Positional Parameters in man bash).
+#~~~~~#
+animal=cat # variable declaration.
+echo ${animal} : cat
+echo ${animal}s : cats # parameter substitution of the variable animal and concatenation with s.
+echo ${#animal} : 3 # length of the string.
+echo ${animal:1:t} : at # from position 1 to t (cat, start a 0, c => 0).
+echo ${animal/at/ow} : cow # replace at with ow.
+cat=tabby
+echo ${!animal} : tabby # variable indirection, kind like pointer in C (cat=tabby, animal=cat, !animal=tabby).
+tabby=test.com # variable declaration.
+echo ${tabby#*.} : com # print all characteres after "."
+#~~~~~#
+
+#___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
+###################################
+####_VARIABLES and PARAMETERES_####
+###################################
 ### predefined parameters ###
 #---------------------------#
 $0 # script name (basename).
@@ -51,24 +71,36 @@ $# # number of arguments passed in (count)
 ### command substitution ###
 #--------------------------#
 ls /lib/modules/$(uname -R) || ls /lib/modules/`uname -R` # $() : modern way to use, and ``, create a new shell in where the command inside is executed and the strandard output stdout will be inserted instead.
-### VARIABLES ###
+### variables ###
 #---------------#
 age=30 # local var not shared with child processes.
 export age=30 # env var shared with child, if a child process modify it, parent will not see it, ! ENV VAR are only copied and inherited, not shared !.
-### FUNCTIONS ###
-#---------------#
+$ ls -ld "$filename" # always quote shells variables.
+#___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
+###################
+####_FUNCTIONS_####
+###################
+### Declaration ###
+#-----------------#
 showmess(){    # declare a function, $1 here is a function param.
   echo my message is : $1
 }
+### Call ###
+#----------#
 showmess OMAR # call the function with the param OMAR , the result will be "my message is : OMAR".
-#~~~~~#
+### others ###
+#------------#
 fun_function() {  # calling a function with a composed name base on a variable.
   echo im func 1
 }
 echo enter 1
 read n
 fun$n
-### CONDITION : IF ELIF ELSE FI ###
+#___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
+#######################
+####_CONDITIONS_IF_####
+#######################
+### Condition syntaxe : IF ELIF ELSE FI ###
 #---------------------------------#
 if [ xxx -eq xxx ]; then # if = 0 (true) go to -> then (here using ";")
   echo "yes i agree"
@@ -83,25 +115,35 @@ then
 else
   echo "i do not agree"
 fi
-### IF [] [[ ]] (( )) () ###
-#--------------------------#
-##-----IF [ ]-----##
+### IF [] ###
+#-----------#
+##-----Syntaxe-----##
 if [ "$var" == "omar" ] # same as command : 'test', used to check files types and compare values.
 #~~~~~#
 if [ -a *.sh ]; then # if their is 1 file => true, if their is 0 files => false, if their is n files => error, because *.sh is expanded to the files in the working directory.
-##-----IF [ ] operators-----##
-# Relational and arithemetic operators #
-if [ $a -eq $b ] # equal ==
-if [ $a == $b ]  # equal ==
-TODO diff between == -eq.
-if [ $a -ne $b ] # not equal !=
-if [ $a != $b ] # not equal !=
-if [ $a -gt $b ] # great than >
-if [ $a -lt $b ] # less than <
-if [ $a -ge $b ] # great or equal >=
-if [ $a -le $b ] # less or equal <=
-TODO
-# File test operators #
+##-----Arithemetic Operations val and let----#
+val=`expr 2 + 2`; echo $val # expr evaluate experssions and return result. (+, -, *, /, %, =(assign), ==(equal), !=(not equal)). in modern scripting $(()) is used.
+let x=( 2 + 2); echo $x # builin shell command for arithemetic. in modern scripting $(()) is used.
+##-----Relational and Arithemetic Operators-----##
+if [ $a -eq $b ] # equal.
+if [ $a -ne $b ] # not equal.
+if [ $a -gt $b ] # great than >.
+if [ $a -lt $b ] # less than <.
+if [ $a -ge $b ] # great or equal >=.
+if [ $a -le $b ] # less or equal <=.
+if [ ! false ] # give true, inverts the boolean operator.
+if [ 10 -lt 20 -o 30 -gt 40] || if [ 10 -lt 20 ] || [ 30 -gt 40 ] # OR, will return true. (Note that the and operator has precedence over the or operator, meaning that “&&” or “-a” will be evaluated before “||” or “-o”.).
+if [ 10 -lt 20 -a 30 -gt 40] || if [ 10 -lt 20 ] && [ 30 -gt 40 ]  # AND, will return false. (Note that the and operator has precedence over the or operator, meaning that “&&” or “-a” will be evaluated before “||” or “-o”.).
+##-----String Operators-----##
+if [ $a == $b ]  # equal (== works too), are string comparaison in [ ].
+if [ $a != $b ] # not equal.,  are string comparaison in [ ].
+if [ $a > $b ] # $a sorts after $b.
+if [ $a < $b ] # $a sorts before $b.
+if [ $a != $b ]
+if [ -z $a ] # check if lenght size is zero, return true if it is the case.
+if [ -n $a ] # check if size is NOT zero.
+if [ $a ] # check if string $a is not empty. (if empty return false).
+##-----File Test Operators-----##
 if [ -a file.txt ] || if [ -e existingfile ] # check if a file exists.
 if [ -b /dev/fd0 ] # check if a block special file like kernel and device files in /dev (ATA devices, disk, CD ROM).
 if [ -c /dev/dsp ] # check if special characteres file like kernel ones in /dev (audio hardware, tty’s, /dev/null for example).
@@ -132,18 +174,97 @@ if [ -p $file ]; then # check if $file exist and is a named pip file which are f
 cp $file tmp.tmp # Make sure we’ll be able to read
 file="tmp.tmp"    # the file as many times as we like
 fi
-##-----[[  ]]-----##
+##-----Miscellaneous-----##
+if [ -o shelloption ] # check if shelloption is enabled, Shell options modify the behaviour of bash, except a few unmodifiable ones that indicate the shell status (checkwinzise, login_shell).
+### IF [[ ]] ###
+#--------------#
+# shares sames operator as [ ] with exception and features bellow
+##-----Syntaxe-----##
 if [[ $var == omar ]] # upgrade of '[ ]',support '[ ]' feartures and have extended ones like testing string value with regular expression, no need to put a variable in "" to evaluate an espace for example, (support && and || and also -a and -o from [ ])
 #~~~~~#
-if [[ -a *.sh ]]; then # if their is 1 file => true, if their is 0 files => false, if their is n files => will return true at the first files because their is no filename expansion.
-#~~~~~#
+if [[ -a *.sh ]]; then # apply pattern matching rules, if their is 1 file => true, if their is 0 files => false, if their is n files => will return true at the first files because their is no filename expansion.
+##-----Relational and Arithemetic Operators-----##
+if [[ 5 == 5 ]] # equal.
+if [[ 5 != 6 ]] # not equal.
+if [[ 5 <= 6 ]] # great or equal.
+if [[ 6 >= 5 ]] # less or equal.
+if [[ 3 -eq 3 && bar == foo ]] # and, will return false. (Note that the and operator has precedence over the or operator, meaning that “&&” or “-a” will be evaluated before “||” or “-o”.).
+if [[ 3 -eq 3 || bar == foo ]] # or, will return true. (Note that the and operator has precedence over the or operator, meaning that “&&” or “-a” will be evaluated before “||” or “-o”.).
+##-----String Operators-----##
+if [[ $var == omar ]] # compare string and apply pattern matching rules (*, ?, etc.), and no need for""(see pattern matching in bash).
+##-----regex comparaison-----##
 if [[ “$email” =~ “b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}b” ]]; then # example of regex comparaison.
 echo “$email contains a valid e-mail address.”
 fi
-#~~~~~#
-##----- IF (( ))-----##
+### IF (( )) ###
+#--------------#
+# only accepte numbers and arithemetic, accept normal operator "==", "<", ">=", "&&", "||", but no -o and -a. (String is converted to number).
+##-----Syntaxe-----##
 if (( $number <= 5 )) # perfom arithemetic, if the result of calculation != 0 , it return exit code 0 (true), support <=, =>, ==, &&, !!, etc, as for programming.
-##-----IF ()-----##
+### IF ( ) ###
+#------------#
 if ( rm -r dir ) # create a subshell and once the command is executed sets an exit code, IF command execution was successfull return true, else false.(main raison to use is to not affect ENV VAR)
-##-----IF COMMAND-----##
+### IF command ###
+#------------#
 if rm -r dir # if commend execution is successfull return true.
+#___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
+#########################
+####_CONDITIONS_CASE_####
+#########################
+##-----Syntaxe-----##
+case "$response" in
+  "Hi")
+      echo "hello to you";
+      ;;
+  "bye")
+      echo "bye";
+      break;
+      ;;
+    *)
+      echo "Sorry, i don't understand"
+      ;;
+esac
+#___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
+##################
+####_LOOP_FOR_####
+##################
+##-----Syntaxe-----##
+for i in {1..5}
+do
+  sum=$(($sum+$i))
+done
+#~~~~~#
+FILES="$@"
+for f in $FILES
+do
+        # if .bak backup file exists, read next file
+	if [ -f ${f}.bak ]
+	then
+		echo "Skiping $f file..."
+		continue  # read next file and skip the cp command
+	fi
+        # we are here means no backup file exists, just use cp command to copy file
+	/bin/cp $f $f.bak
+done
+#___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
+####################
+####_LOOP_WHILE_####
+####################
+##-----Syntaxe-----##
+while [ $j -ne 0 ] # repeats as long as control command return TRUE (tant que j != 0), (The while loop enables you to execute a set of commands repeatedly until some condition occurs.).
+do
+  j=$(($j-1))
+done
+#___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
+####################
+####_LOOP_UNTIL_####
+####################
+##-----Syntaxe-----##
+until [ $j -eq 0 ] # repeats as long as control command return FALSE (perfect for a situation where you need to execute a set of commands while some condition is true).
+do
+  j=$(($j-1))
+done
+#___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
+####################
+####_DEBUGGING_####
+####################
