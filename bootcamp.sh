@@ -6,6 +6,15 @@
 ### SSH ###
 #---------#
 ssh student@ansibleprod
+### SSH KEY ###
+# from [Ansible Master] to [Ansible Agent] (from server to agent without password not the other way), this can be done for the case of : from [user] to [applicatif server] too.
+ssh-keygen -t rsa # generate the pair of keys (private and public) and save the private key inside /home/AnsibleMaster/.ssh/id_rsa and the public inside /home/AnsibleMaster/.ssh/id_rsa.pub.
+ssh-copy-id root@192.168.88.129 # copy the public key into the Ansible agent authorized_keys /home/AnsibleAgent/.ssh/authorized_keys.
+cat ~/.ssh/id_rsa.pub | ssh root@192.168.88.129 "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >>  ~/.ssh/authorized_keys" # or you can use this to past the key.
+ssh root@192.168.88.129 # to test if connexion without password works.
+vim /etc/ssh/sshd_config || PermitRootLogin without-password # disable root login using password , only ssh keys accepted.
+systemctl reload sshd-service # reload ssh daemon to load new changes.
+#
 ### SHUTDOWN & REBOOT ###
 #-----------------------#
 shutdown -h 10:00 "Shutingdown for update" # -h : halt 10:00 schedule "" message to users.
@@ -133,12 +142,16 @@ ls -l | cut -d " " -f3 # -d : delimiter, -f3 : 3rd column, used to manipulate co
 touch file1 # create an empty file1, -t : set the date and timestamp of a file.
 mkdir dir1 # create directory dir1.
 rmdir dir1 # if dir1 is empty, will remove it.
+### CREATION OF TEMPORARY FILES OR DIRECTORIES ###
+mktemp /tmp/tmp.xxxxx # create a temporary file inside /tmp.
+mktemp -d /tmp/tmpdir.xxxx # create a temporary directory inside /tmp.
 ### STANDARD FILE STREAMS & I/O REDIRECTIONS ####
 #-----------------------------------------------#
 cat < file0 # set stdin input as file0.
 ls -l /var > file1 # set stdout output to file1.
 ls -l /do_not_exist 2> file2 # set error output to file2.
 ls -l /var > file1and2 2>&1 || ls -l /var >& file1and2 # redirect stdout and stderr to file1and2.
+ls -l /tmp >& /dev/null # discard output to the void /dev/null.
 #TODO
 ### REMOVE DELETE ###
 #-------------------#
@@ -220,6 +233,7 @@ export JAVA_HOME=/usr/java/jre1.6.0_04 # export a new env variable (here the jav
 export PATH=/usr/java/jdk1.8.0_04/bin:$PATH # add jdk to path variable, be sure to add $PATH at the end, to not override previous paths.
 export SHELL=/bin/bash # set the default shell.
 export PS1=\u@\h\$ # u : user, h : host, omar@server$, export PS1 variable.
+echo $RANDOM # generate a random number uses the FIPS140 algorithm, used by the open SSH library.
 #___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
 ###########################
 ####_PACKAGE_MANAGEMENT_###

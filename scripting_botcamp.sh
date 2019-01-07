@@ -268,3 +268,7 @@ done
 ####################
 ####_DEBUGGING_####
 ####################
+bash -x ./script.sh # -x : debug mode.
+#!/bin/bash # setting debug mode inside script
+set -x # -x turn off debugging.
+#~~~~~#
