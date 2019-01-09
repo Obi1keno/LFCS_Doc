@@ -17,7 +17,7 @@ systemctl reload sshd-service # reload ssh daemon to load new changes.
 #
 ### SHUTDOWN & REBOOT ###
 #-----------------------#
-shutdown -h 10:00 "Shutingdown for update" # -h : halt 10:00 schedule "" message to users.
+shutdown -r -h 10:00 "Shutingdown for update" # -r : reboot, -h : halt 10:00 schedule "" message to users.
 ### HISTORY ###
 #-------------#
 history # print history of commands executed based on ~/.bash_history. (env variable for history : HISTFILE > location, HISTFILESIZE > max line numbers, etc.)
@@ -53,15 +53,16 @@ help # displays information about builtin commands.
 ### SPACE FILESYSTEM INFO ###
 #---------------------------#
 df -Th # -T : print filesystem type, -h : human readable, df or diskfree displays filesystem disk usage.
-du --max-depth=1 -hx # -x : stay on fs do not look at dir that aren't in / (/dev/proc/run/sys) -h : human readable.
+du --max-depth=1 -hx || du -sh * # -x : stay on fs do not look at dir that aren't in / (/dev/proc/run/sys) -h : human readable, -s : summarize, display only total for each args.
 ### MOUNT UNMOUNT FILESYSTEMS ###
 #-------------------------------#
 mount /dev/sda5 /home # mount the device node (/dev/sda5) into the mount point directory (/home).
 mount || cat /proc/mounts # show all presently mounted FS according to /etc/mtab -> /proc/self/mounts
+cat /proc/filesystems # list filesystem types in use.
+ls /lib/modules/$(uname -r)/kernel/fs # list supported filesystem type.
+man mount # to display list of filesystem independent options.
 umount /home # un mount /home from /dev/sda5.
 cat /etc/fstab # explicitly requested filesystem table, to edit in order to mount at startup.
-cat /proc/filesystems # filesystem types the current kernel supports.
-man mount # to display list of filesystem independent options.
 cat /proc/sys/kernel/random/uuid || uuidgen # to generate a random UUID.
 ls -l /dev/disk/by-uuid/ # UUID names and their link to the block device.
 blkid # locate/print block device attributes.
@@ -221,9 +222,11 @@ umask 022 # set new created files permissions , new file in linux by default hav
 -rw-r--r--. 1 root root # file with no link =1.
 -rw-r--r--. 2 root root # file that has 2 reference pointing to it (link) = 2.
 drwxr-xr-x 10 root root # directory containing 8 files, "." and ".." = 10 files.
-### SGID and SUID ####
+### SGID SUID and Sticky BIT ####
 -rwsr-xr-x. 1 root root 27832 Jun 10  2014 /bin/passwd # s : permission byte/sticky bite , user will get file owner's permissions as well as UID & GID when executing the file.
 chmod u+s file || chmod 4750 file  # set SUID or SGID (4 : user suid, 2 : group id guid, 6 : both).
+drwxrwxrwt.  17 root root 4096 Jan  9 16:02 tmp # t : sticky bit, restrict deleting file and directoy only to their owners in directories with full access 777. (restricted deletion bit, applies only to directories).
+chmod 1777 full_access_directory || chmod 777 full_access_directory && chmod a+t full_access_directory # set sticky bit to full accessed directory.
 
 ### ENV-VAR ###
 #-------------#
@@ -269,6 +272,7 @@ yum info rundeck # show detailled info about installed package named "rundeck" a
 yum list  # list installed , updates or available packages.
 yum provides /etc/logrotate.conf # which packages contains the file "logrotate.conf"
 yum provides yum # which packages provides the command yum
+yum-config-manager --add-repo repository_url # add .repo file through command line.
 yum repolist # list all repos.
 ##-----YUM history, plugins and verification-----##
 yum history # show history with possiblity of undo & redo.
@@ -306,6 +310,7 @@ dnf update httpd -y # -y : assumes yes, update httpd.
 #-------------#
 w # shows users, their processes, how many are logged and the system load average.
 top # display load average, memory, cpu utilization and linux processes.
+uname -a # a : all, display system information (-r : kernel release).
 ### ULIMITE ###
 #-------------#
 ulimit -a # show all limits.
