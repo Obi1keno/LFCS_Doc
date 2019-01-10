@@ -131,11 +131,11 @@ grep -rnw '/path/to/somewhere/' -e 'pattern' # r : recursive, n : print line num
 #-----String-----#
 string book.xls | grep my_string # extract all printable chars in a non human file.
 #-----tr-----#
-tr [:space:] '\t' file1 file2.yml # replace all space to tab.
+tr [:space:] '\t' < file1 > file2.yml # replace all space to tab.
 #-----tee-----#
 ls -lrta | tee ls_output # print output and save a copy to ls_output.
 #-----wc-----#
-wc file # print -l : number of line, -c : number of bytes, -w : number of words (if empty the 3 are diplays by default).
+wc file # print -l : number of line, -w : number of words, -c : number of bytes (if empty the 3 are diplays by default).
 #-----cut-----#
 ls -l | cut -d " " -f3 # -d : delimiter, -f3 : 3rd column, used to manipulate column based files to extract specific columns.
 ### CREATION ####
@@ -144,7 +144,7 @@ touch file1 # create an empty file1, -t : set the date and timestamp of a file.
 mkdir dir1 # create directory dir1.
 rmdir dir1 # if dir1 is empty, will remove it.
 ### CREATION OF TEMPORARY FILES OR DIRECTORIES ###
-mktemp /tmp/tmp.xxxxx # create a temporary file inside /tmp.
+mktemp /tmp/tmp.XXXX # replace automatically and randomly the XXXX and create a temporary file inside /tmp.
 mktemp -d /tmp/tmpdir.xxxx # create a temporary directory inside /tmp.
 ### STANDARD FILE STREAMS & I/O REDIRECTIONS ####
 #-----------------------------------------------#
