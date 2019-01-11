@@ -204,6 +204,7 @@ whoami # identify current user.
 id obistami # information about user (uid, gid, groups, etc.)
 ### USERS GROUPS CREATION, MODIFICATION and SUPPRESSION ###
 #---------------------------------------------------------#
+# useradd is native binary compiled with the system. But, adduser is a perl script which uses useradd binary in back-end. adduser is more user friendly and interactive than its back-end useradd.
 useradd obistami # create a new use by adding a line to : /etc/passwd(obistami:x:1000:1000::/home/obistami:/bin/bash) , creating a home directory : /home/obistami and copying basic files from : /etc/skel/* .
 userdel -r obistami # -r : delete user and home directory.
 groupadd devs # add the group "devs".
