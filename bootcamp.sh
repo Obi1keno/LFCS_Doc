@@ -212,14 +212,15 @@ groupdel devs # delete the group "devs".
 usermod -a -G devs obistami # -a : append, -G : list of group affected by -a (if !-a user will be removed from group not listed) add obistami to the group devs.
 ### SUDO ###
 #----------#
+sudo -i # connect as sudo and change it password with passwd.
 touch /etc/sudoers.d/student < student ALL = (ALL) ALL && chmod 440 /etc/sudoers.d/student # add a sudoer user named student.
 sudo -E bash - # -E : indicate to the security policy that user wishes to preserve their existing env variables (can return error).
 ### PERMISSIONS AND OWNERSHIP ###
 #-------------------------------#
-chmod 755 file || chmod u+rwx,g+a,g+rwx # +a : all, set file permissions to 755 (1 = execute , 2 = write, 4 = read).
+chmod 755 file || chmod u=rwx,g+rx,o-w # a=r : give all user read acces, - : remove, + : add, = : set exactly as, sets file permissions to 755 (1 = execute , 2 = write, 4 = read).
 chown apache:apache /etc/httpd/httpd.conf # change ownership of the file to the user and group apache.
 umask || umask -S # -S : symbolic representation (rwx) view the current umask.
-umask 022 # set new created files permissions , new file in linux by default have 644 - 022 (applying umask) = 622, new directories by default have 755 - 022 (umask) = 733.
+umask 022 # set new created files permissions , new file in linux by default have 666 - 022 (applying umask) = 644, new directories by default have 777 - 022 (umask) = 755.
 -rw-r--r--. 1 root root # file with no link =1.
 -rw-r--r--. 2 root root # file that has 2 reference pointing to it (link) = 2.
 drwxr-xr-x 10 root root # directory containing 8 files, "." and ".." = 10 files.
