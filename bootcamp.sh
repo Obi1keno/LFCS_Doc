@@ -213,7 +213,7 @@ usermod -a -G devs obistami # -a : append, -G : list of group affected by -a (if
 ### SUDO ###
 #----------#
 sudo -i # connect as sudo and change it password with passwd.
-touch /etc/sudoers.d/student < student ALL = (ALL) ALL && chmod 440 /etc/sudoers.d/student # add a sudoer user named student.
+touch /etc/sudoers.d/student < student ALL=(ALL) NOPASSWD: ALL && chmod 440 /etc/sudoers.d/student # add a sudoer user named student without needing passwd.
 sudo -E bash - # -E : indicate to the security policy that user wishes to preserve their existing env variables (can return error).
 ### PERMISSIONS AND OWNERSHIP ###
 #-------------------------------#
@@ -238,6 +238,7 @@ export JAVA_HOME=/usr/java/jre1.6.0_04 # export a new env variable (here the jav
 export PATH=/usr/java/jdk1.8.0_04/bin:$PATH # add jdk to path variable, be sure to add $PATH at the end, to not override previous paths.
 export SHELL=/bin/bash # set the default shell.
 export PS1=\u@\h\$ # u : user, h : host, omar@server$, export PS1 variable.
+env -u ENV_VAR # u : unset, unset an environnement variable
 echo $RANDOM # generate a random number uses the FIPS140 algorithm, used by the open SSH library.
 #___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
 ###########################
