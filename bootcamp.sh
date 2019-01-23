@@ -73,6 +73,13 @@ systemctl enable nfs # nfs started at boot.
 cat /etc/exports # contains directories and permissions to share with other hosts.
 exportfs -av # -a : export or unexport directories, v : verbose : notify system about new NFS directories, you can also restart nfs but it is heavier.
 mount ansible_server:/home/student/project /mnt/nfs/project # mount manually the NFS if he wasnt mounted automatically in /etc/fstab.
+### CHROOT ###
+#----------------#
+cd /mnt/mydrive/ # go to the new location to considere as the new root tree (change root here).
+mount -t proc /proc /mnt/mydrive/proc/ # mount temporary API filesystems , first proc to the /proc of the to be new root directory.
+mount --rbind /sys /mnt/mydrive/sys/ # then same thing for /sys.
+mount --rbind /dev /mnt/mydrive/dev/ # and finally for /dev.
+chroot /mnt/mydrive/boot # change root directory (/), run command or interactive shell with special root directory, used for maintenance and recovery.
 ### DD & RSYNC ###
 #----------------#
 dd if=/dev/sda of=/dev/sdv # make byte for byte image of /dev/sda into /dev/sdv (can be used whit strage drive, partition, file system, etc.)
