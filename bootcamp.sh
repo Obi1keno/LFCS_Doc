@@ -197,7 +197,8 @@ zip backup_home /home/student/* # compress all file inside /home/student/* insid
 unzip backup_home.zip # uncompress in current directory.
 ##-----TAR-----##
 tar zcvf mytardir.tar.gz mytardir # z or --gzip : compress using gz(-j or --bzip2, -J or --xz), c : create archive tar, v : verbose, f : archive file.
-tar xvf myTarfile.tar # x : extract, v : verbose, f : specify file, into myTarfile directory.
+tar xvf myTarfile.tar # x : extract, v : verbose, f : specify file, into current directory.
+tar -xzvf git-lfs-linux-amd64-v2.6.1.tar.gz -C /home/obi1keno/Downloads/gitlfs/ # -xzvf : extracting and ungzip with verbose, -C choose another directory.
 #___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
 ##############################
 ####_USERS_GROUPS_ENV_Vars_###
