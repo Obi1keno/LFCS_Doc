@@ -1,1 +1,5 @@
 *.tar.gz filter=lfs diff=lfs merge=lfs -text
+*.gz filter=lfs diff=lfs merge=lfs -text
+other/*.gz filter=lfs diff=lfs merge=lfs -text
+other/* filter=lfs diff=lfs merge=lfs -text
+other/plugins.tar.gz filter=lfs diff=lfs merge=lfs -text
