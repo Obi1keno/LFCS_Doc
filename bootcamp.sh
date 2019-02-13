@@ -88,6 +88,10 @@ ssh username@54.98.132.10 "dd if=/dev/sda | gzip -1 -" | dd of=backup.gz # backu
 dd if=/dev/urandom of=/dev/sda1 # (data definition) make it harder to restore data from sda1 by adding random characteres everywhere.
 dd if=/dev/sda of=sda.mbr bs=512 count=1 # backup the Master Boot loader (MBL), the first 512bytes sector on the disk.
 rsync -r --dry-run project_X archive-machine:/archive_dir/project_X # -r : recursive, --dry-run : simulate, rsync copies only the part that change in a file (fast) locally or to a remote machine.
+### /tmp ###
+#----------------#
+df -k /tmp || systemctl is-enabled tmp.mount # show if /tmp is mounted on hard disk (/dev/mapper...etc.) or it is mounted on ram (tmpfs)
+systemctl mask tmp.mount && systemctl enable tmp.mount # disable and enable the mounting on tmpfs (ram)
 #___________________________________________________________________________________________________________________________________________________________________________________________________________________________________#
 ##############################
 ####_FILES_AND_DIRECTORIES_###
